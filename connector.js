@@ -57,7 +57,7 @@ class ServiceNowConnector {
    * @param {error} callback.error - The error property of callback.
    */
   get(callback) {
-    let getCallOptions = { ...this.options };
+    let getCallOptions = this.options;
     getCallOptions.method = 'GET';
     getCallOptions.query = 'sysparm_limit=1';
     this.sendRequest(getCallOptions, (results, error) => callback(results, error));
@@ -124,16 +124,19 @@ class ServiceNowConnector {
    if(error){
        console.log('Error.');
        callbackErrors = error;
+       callback(callbackData,callbackErrors);
    }else if (!validResponseRegex.test(response.statusCode)){
         console.log('Response code error');
         callbackErrors = response;
+        callback(callbackData,callbackErrors);
    }else if (this.isHibernating(response)){
         console.log('callbackErrors');
         callbackErrors = 'Instance is hibernating';
+        callback(callbackData,callbackErrors);
    }else{
        callbackData=response;
+       callback(callbackData,callbackErrors);
 }
-return callback(callbackData,callbackErrors);
    
 }
 
